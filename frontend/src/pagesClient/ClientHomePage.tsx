@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom";
 import InfoPage from "../pagesAll/InfoPage";
 import EntrarPage from "../pagesAll/EntrarPage";
 import CriarConta from "../pagesAll/CriarConta";
+import Pacotes from "./PacotesPage";
 import {
   ShoppingBag,
-  UserPlus,
+  Home,
   Package,
   Info,
   ArrowRight,
@@ -38,13 +39,13 @@ export default function ClientHomePage() {
       case "iniciarConta":
         return <CriarConta />;
       case "pacotes":
-        return <p>Conteúdo da seção "Pacotes"</p>;
+        return <Pacotes />;
       case "cadastrar":
         return <p>Conteúdo da seção "Cadastrar"</p>;
       case "sobreNos":
         return <InfoPage />;
       case "login":
-        return <EntrarPage />;
+        return renderIniciarConta();
       default:
         return null;
     }
@@ -126,6 +127,24 @@ export default function ClientHomePage() {
     );
   };
 
+  const renderIniciarConta = () => {
+    return (
+      <div>
+        <EntrarPage />
+        <p className="text-sm text-center mt-4 text-[#8B4513]">
+          Não tem uma conta?{" "}
+          <a
+            href="#"
+            className="text-[#C19A6B] font-semibold"
+            onClick={() => setSelectedSection("iniciarConta")} // Aqui chamamos o método para renderizar a página de criar conta
+          >
+            Crie uma agora
+          </a>
+        </p>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col h-screen bg-[#F5E6D3]">
       <div className="flex flex-1">
@@ -141,18 +160,18 @@ export default function ClientHomePage() {
           </div>
           <nav className="space-y-4">
             <button
+              onClick={() => setSelectedSection("home")}
+              className="w-full flex items-center justify-start p-3 text-white hover:bg-[#C19A6B] rounded-lg transition-colors duration-200"
+            >
+              <Home className="mr-3 h-5 w-5" />
+              Home
+            </button>
+            <button
               onClick={() => setSelectedSection("login")}
               className="w-full flex items-center justify-start p-3 text-white hover:bg-[#C19A6B] rounded-lg transition-colors duration-200"
             >
               <LogIn className="mr-3 h-5 w-5" />
               Entrar
-            </button>
-            <button
-              onClick={() => setSelectedSection("iniciarConta")}
-              className="w-full flex items-center justify-start p-3 text-white hover:bg-[#C19A6B] rounded-lg transition-colors duration-200"
-            >
-              <UserPlus className="mr-3 h-5 w-5" />
-              Criar Conta
             </button>
             <button
               onClick={() => setSelectedSection("pacotes")}
