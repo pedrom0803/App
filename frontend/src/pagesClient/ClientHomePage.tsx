@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InfoPage from "../pagesAll/InfoPage";
@@ -136,7 +134,7 @@ export default function ClientHomePage() {
           <a
             href="#"
             className="text-[#C19A6B] font-semibold"
-            onClick={() => setSelectedSection("iniciarConta")} // Aqui chamamos o método para renderizar a página de criar conta
+            onClick={() => setSelectedSection("iniciarConta")}
           >
             Crie uma agora
           </a>

@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-
+import SendEmail from "../pagesClient/SendEmail";
 export default function InfoPage() {
   return (
     <div className="space-y-8">
@@ -65,13 +65,7 @@ export default function InfoPage() {
           </ul>
         </div>
       </div>
-
-      {/* Chamada para ação */}
-      <div className="mt-12 text-center">
-        <button className="px-8 py-4 bg-[#D2B48C] text-white text-lg font-semibold rounded-full hover:bg-[#C19A6B] flex items-center justify-center mx-auto transition-colors duration-200 shadow-lg">
-          Entre em Contato <ArrowRight className="ml-2 h-5 w-5" />
-        </button>
-      </div>
+      <SendEmail />
     </div>
   );
 }

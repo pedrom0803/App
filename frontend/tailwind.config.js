@@ -1,5 +1,7 @@
 module.exports = {
-  purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}", // Ou o caminho que reflete seus arquivos React
+  ],
   theme: {
     extend: {},
     screens: {
