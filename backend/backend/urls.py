@@ -20,4 +20,5 @@ from django.urls import path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # path('wel/', ReactView.as_view(), name="something"),
 ]
