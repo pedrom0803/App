@@ -17,8 +17,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from back.views import LoginView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # path('wel/', ReactView.as_view(), name="something"),
+    path('api/token/', LoginView.as_view(), name='login'),
 ]

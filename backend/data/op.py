@@ -15,7 +15,7 @@ def getDistritos():
     # Converter para uma lista se quiser uma lista de distritos
     distritos = list(distritos)
     
-    return distritos
+    return  [(distrito, distrito) for distrito in distritos]
 
 def getConcelhos(distrito):
     import locale
@@ -28,4 +28,4 @@ def getConcelhos(distrito):
     concelhos = sorted({item["concelho"] for item in dados if item["distrito"]==distrito}, key=locale.strxfrm)
     concelhos = list(concelhos)
     
-    return concelhos
+    return [(concelho, concelho) for concelho in concelhos]

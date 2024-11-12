@@ -1,22 +1,29 @@
-from django.shortcuts import render
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
-from . models import *
 from rest_framework.response import Response
-from . serializer import *
-# Create your views here.
+from rest_framework import status
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 
-# class ReactView(APIView):
-  
-#     serializer_class = ReactSerializer
+class LoginView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
 
-#     def get(self, request):
-#         detail = [ {"name": detail.name,"detail": detail.detail} 
-#         for detail in React.objects.all()]
-#         return Response(detail)
+        # Busca o usuário pelo email
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-#     def post(self, request):
+        # Autentica com o email e senha
+        user = authenticate(request, username=user.username, password=password)
+        if user:
+            refresh = RefreshToken.for_user(user)
+            access_token = refresh.access_token
+            return Response({
+                'refresh': str(refresh),
+                'access': str(access_token),
+            }, status=status.HTTP_200_OK)
 
-#         serializer = ReactSerializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save()
-#             return  Response(serializer.data)
+        return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)

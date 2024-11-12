@@ -1,4 +1,30 @@
+import React, { useState } from "react";
+import axios from "axios";
+
+import { FormEvent } from "react";
+
 export default function EntrarPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8000/api/token/", {
+        email,
+        password,
+      });
+      // Salvar o token JWT no localStorage ou no estado
+      localStorage.setItem("access_token", response.data.access);
+      localStorage.setItem("refresh_token", response.data.refresh);
+      // Redirecionar ou realizar outra ação após o login
+      // window.location.href = "/dashboard"; // Exemplo
+    } catch (err) {
+      setError("Credenciais inválidas");
+    }
+  };
+
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
       <div className="w-full max-w-md bg-[#FFF8DC] border border-[#D2B48C] rounded-lg shadow-md overflow-hidden">
@@ -7,7 +33,7 @@ export default function EntrarPage() {
           <p className="text-[#8B4513] mb-6">
             Faça login para acessar sua conta ComprasExpress
           </p>
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="space-y-4">
               <div className="space-y-2">
                 <label
@@ -21,6 +47,8 @@ export default function EntrarPage() {
                   type="email"
                   placeholder="seu@email.com"
                   className="w-full px-3 py-2 bg-white border border-[#D2B48C] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C19A6B]"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
               <div className="space-y-2">
@@ -34,9 +62,12 @@ export default function EntrarPage() {
                   id="password"
                   type="password"
                   className="w-full px-3 py-2 bg-white border border-[#D2B48C] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C19A6B]"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
             </div>
+            {error && <p>{error}</p>}
             <button
               type="submit"
               className="w-full mt-6 px-4 py-2 bg-[#D2B48C] text-white font-semibold rounded-md hover:bg-[#C19A6B] transition-colors duration-200"

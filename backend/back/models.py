@@ -1,20 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
-from data.op import *
+from data.op import getDistritos, getConcelhos
 
-# Create your models here.
 class Utilizador(models.Model):
-    
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    nome_completo = models.CharField()
+    nome_completo = models.CharField(max_length=100)
     user_name = models.CharField(max_length=50)
-    contacto = models.CharField(max_length=9,null=True)
-    morada = models.CharField(null=True)
-    distrito  = models.CharField(null=True,choices=getDistritos())
-    concelho = models.CharField(null=True,choices=getConcelhos(distrito))
-    codigo_postal= models.CharField(max_length=8,null=True)
-    porta = models.CharField(null=True)
+    contacto = models.CharField(max_length=9, null=True)
+    morada = models.CharField(max_length=255, null=True)
     
+    distrito = models.CharField(
+        max_length=50,
+        null=True,
+        choices=getDistritos() 
+    )
     
+    concelho = models.CharField(max_length=50, null=True)
+    codigo_postal = models.CharField(max_length=8, null=True)
+    porta = models.CharField(max_length=10, null=True)
+
+    def save(self, *args, **kwargs):
+        if self.distrito:  # Atualiza choices do concelho baseado no distrito selecionado
+            self._meta.get_field('concelho').choices = getConcelhos(self.distrito)
+        super().save(*args, **kwargs)
     
-    
+    def __str__(self):
+        return f"{self.user_name} ({self.nome_completo})"
