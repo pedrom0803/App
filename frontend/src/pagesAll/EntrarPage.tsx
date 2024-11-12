@@ -3,7 +3,11 @@ import axios from "axios";
 
 import { FormEvent } from "react";
 
-export default function EntrarPage() {
+interface EntrarPageProps {
+  onLoginSuccess: () => void;
+}
+
+export default function EntrarPage({ onLoginSuccess }: EntrarPageProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,11 +19,11 @@ export default function EntrarPage() {
         email,
         password,
       });
-      // Salvar o token JWT no localStorage ou no estado
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
-      // Redirecionar ou realizar outra ação após o login
-      // window.location.href = "/dashboard"; // Exemplo
+
+      // Atualiza o estado de autenticação no componente pai
+      onLoginSuccess();
     } catch (err) {
       setError("Credenciais inválidas");
     }

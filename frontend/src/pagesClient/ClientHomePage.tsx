@@ -19,6 +19,8 @@ import {
 export default function ClientHomePage() {
   const [selectedSection, setSelectedSection] = useState("home");
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const navigate = useNavigate();
 
   const Footer = () => (
@@ -44,6 +46,8 @@ export default function ClientHomePage() {
         return <InfoPage />;
       case "login":
         return renderIniciarConta();
+      case "conta":
+        return;
       default:
         return null;
     }
@@ -128,7 +132,12 @@ export default function ClientHomePage() {
   const renderIniciarConta = () => {
     return (
       <div>
-        <EntrarPage />
+        <EntrarPage
+          onLoginSuccess={() => [
+            setIsAuthenticated(true),
+            setSelectedSection("conta"),
+          ]}
+        />
         <p className="text-sm text-center mt-4 text-[#8B4513]">
           Não tem uma conta?{" "}
           <a
@@ -169,8 +178,9 @@ export default function ClientHomePage() {
               className="w-full flex items-center justify-start p-3 text-white hover:bg-[#C19A6B] rounded-lg transition-colors duration-200"
             >
               <LogIn className="mr-3 h-5 w-5" />
-              Entrar
+              {isAuthenticated ? "Conta" : "Entrar"}
             </button>
+
             <button
               onClick={() => setSelectedSection("pacotes")}
               className="w-full flex items-center justify-start p-3 text-white hover:bg-[#C19A6B] rounded-lg transition-colors duration-200"
