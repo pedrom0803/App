@@ -43,7 +43,7 @@ export default function CriarConta() {
       )
     ) {
       passwordError =
-        "A senha deve ter no minimo 8 caracteres e pode incluir letras, números e caracteres especiais ()-$*=#.";
+        "A senha deve ter no minimo 8 caracteres e tem de incluir letras, números e caracteres especiais ()-$*=#.";
     }
 
     // Validação da confirmação da senha
