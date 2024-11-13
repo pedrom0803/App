@@ -1,0 +1,11 @@
+[
+  {
+    "tipo": "Cliente"
+  },
+  {
+    "tipo": "Driver"
+  },
+  {
+    "tipo": "Parceiro"
+  }
+]

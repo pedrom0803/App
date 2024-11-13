@@ -7,7 +7,7 @@ def getDistritos():
     locale.setlocale(locale.LC_ALL, 'pt_PT.UTF-8')
 
     # Abrir e carregar o ficheiro JSON
-    with open('/Users/pedromiguel/Desktop/App/App/backend/data/Distritos_Concelhos.json', 'r') as file:
+    with open('/Users/pedromiguel/Desktop/App/App/backend/data/DistritosConcelhos/Distritos_concelhos.json', 'r') as file:
         dados = json.load(file)
 
     # Extrair distritos únicos
@@ -22,7 +22,7 @@ def getConcelhos(distrito):
 
     locale.setlocale(locale.LC_ALL, 'pt_PT.UTF-8')
     
-    with open('/Users/pedromiguel/Desktop/App/App/backend/data/Distritos_Concelhos.json', 'r') as file:
+    with open('/Users/pedromiguel/Desktop/App/App/backend/data/DistritosConcelhos/Distritos_concelhos.json', 'r') as file:
         dados = json.load(file)
 
     concelhos = sorted({item["concelho"] for item in dados if item["distrito"]==distrito}, key=locale.strxfrm)

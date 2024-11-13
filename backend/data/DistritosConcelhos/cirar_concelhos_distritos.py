@@ -2,7 +2,7 @@ import json
 from collections import defaultdict
 
 # Abrir e carregar o ficheiro JSON
-with open('/Users/pedromiguel/Desktop/App/App/backend/data/Distritos_Concelhos2.json', 'r') as file:
+with open('/Users/pedromiguel/Desktop/App/App/backend/data/DistritosConcelhos/Distritos_Concelhos2.json', 'r') as file:
     dados = json.load(file)
 
 # Criar um dicionário onde cada valor é um set (conjunto) para garantir que os concelhos sejam únicos
@@ -26,7 +26,7 @@ for distrito, concelhos in mapa_distrito.items():
         })
 
 # Salvar o resultado no ficheiro JSON
-with open('/Users/pedromiguel/Desktop/App/App/backend/data/resultado.json', 'w') as file:
+with open('/Users/pedromiguel/Desktop/App/App/backend/data/DistritosConcelhos/Distritos_Concelhos1.json', 'w') as file:
     json.dump(resultado, file, indent=4,ensure_ascii=False)
 
 # Exibir o conteúdo do ficheiro gerado

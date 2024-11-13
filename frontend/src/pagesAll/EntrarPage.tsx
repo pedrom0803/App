@@ -19,8 +19,12 @@ export default function EntrarPage({ onLoginSuccess }: EntrarPageProps) {
         email,
         password,
       });
+
+      const { user_type } = response.data;
+
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
+      localStorage.setItem("user_type", user_type);
 
       // Atualiza o estado de autenticação no componente pai
       onLoginSuccess();

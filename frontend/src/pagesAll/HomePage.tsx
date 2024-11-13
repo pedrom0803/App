@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import InfoPage from "../pagesAll/InfoPage";
-import EntrarPage from "../pagesAll/EntrarPage";
-import CriarConta from "../pagesAll/CriarConta";
-import Pacotes from "./PacotesPage";
+import InfoPage from "./InfoPage";
+import EntrarPage from "./EntrarPage";
+import CriarConta from "./CriarConta";
+import Pacotes from "../pagesClient/PacotesPage";
+import AccountClient from "../pagesClient/AccountClient";
+import Cadastrar from "../pagesDrivers/CadastrarPage";
+import AccountDriver from "../pagesDrivers/AccountDriverPage";
 import {
   ShoppingBag,
   Home,
@@ -14,12 +17,15 @@ import {
   Clock4,
   HandHelping,
   LogIn,
+  User,
 } from "lucide-react";
 
-export default function ClientHomePage() {
+export default function HomePage() {
   const [selectedSection, setSelectedSection] = useState("home");
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const [typeUser, setTypeUser] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -32,6 +38,17 @@ export default function ClientHomePage() {
     </footer>
   );
 
+  useEffect(() => {
+    // Verifica se o usuário já está autenticado
+    const token = localStorage.getItem("access_token");
+    const userType = localStorage.getItem("user_type");
+
+    if (token) {
+      setIsAuthenticated(true);
+      setTypeUser(userType);
+    }
+  }, []);
+
   const renderContent = () => {
     switch (selectedSection) {
       case "home":
@@ -41,13 +58,13 @@ export default function ClientHomePage() {
       case "pacotes":
         return <Pacotes />;
       case "cadastrar":
-        return <p>Conteúdo da seção "Cadastrar"</p>;
+        return <Cadastrar />;
       case "sobreNos":
         return <InfoPage />;
       case "login":
         return renderIniciarConta();
       case "conta":
-        return;
+        return typeUser === "cliente" ? <AccountClient /> : <AccountDriver />;
       default:
         return null;
     }
@@ -168,36 +185,70 @@ export default function ClientHomePage() {
           <nav className="space-y-4">
             <button
               onClick={() => setSelectedSection("home")}
-              className="w-full flex items-center justify-start p-3 text-white hover:bg-[#C19A6B] rounded-lg transition-colors duration-200"
+              className={`w-full flex items-center justify-start p-3 text-white rounded-lg transition-colors duration-200 ${
+                selectedSection === "home"
+                  ? "bg-[#C19A6B] shadow-lg"
+                  : "hover:bg-[#C19A6B]"
+              }`}
             >
               <Home className="mr-3 h-5 w-5" />
               Home
             </button>
-            <button
-              onClick={() => setSelectedSection("login")}
-              className="w-full flex items-center justify-start p-3 text-white hover:bg-[#C19A6B] rounded-lg transition-colors duration-200"
-            >
-              <LogIn className="mr-3 h-5 w-5" />
-              {isAuthenticated ? "Conta" : "Entrar"}
-            </button>
+            {!isAuthenticated ? (
+              <button
+                onClick={() => setSelectedSection("login")}
+                className={`w-full flex items-center justify-start p-3 text-white rounded-lg transition-colors duration-200 ${
+                  selectedSection === "login"
+                    ? "bg-[#C19A6B] shadow-lg"
+                    : "hover:bg-[#C19A6B]"
+                }`}
+              >
+                <LogIn className="mr-3 h-5 w-5" />
+                Entrar
+              </button>
+            ) : (
+              <button
+                onClick={() => setSelectedSection("conta")}
+                className={`w-full flex items-center justify-start p-3 text-white rounded-lg transition-colors duration-200 ${
+                  selectedSection === "conta"
+                    ? "bg-[#C19A6B] shadow-lg"
+                    : "hover:bg-[#C19A6B]"
+                }`}
+              >
+                <User className="mr-3 h-5 w-5" />
+                Conta
+              </button>
+            )}
 
             <button
               onClick={() => setSelectedSection("pacotes")}
-              className="w-full flex items-center justify-start p-3 text-white hover:bg-[#C19A6B] rounded-lg transition-colors duration-200"
+              className={`w-full flex items-center justify-start p-3 text-white rounded-lg transition-colors duration-200 ${
+                selectedSection === "pacotes"
+                  ? "bg-[#C19A6B] shadow-lg"
+                  : "hover:bg-[#C19A6B]"
+              }`}
             >
               <Package className="mr-3 h-5 w-5" />
               Pacotes
             </button>
             <button
               onClick={() => setSelectedSection("cadastrar")}
-              className="w-full flex items-center justify-start p-3 text-white hover:bg-[#C19A6B] rounded-lg transition-colors duration-200"
+              className={`w-full flex items-center justify-start p-3 text-white rounded-lg transition-colors duration-200 ${
+                selectedSection === "cadastrar"
+                  ? "bg-[#C19A6B] shadow-lg"
+                  : "hover:bg-[#C19A6B]"
+              }`}
             >
               <Car className="mr-3 h-5 w-5" />
               Cadastrar
             </button>
             <button
               onClick={() => setSelectedSection("sobreNos")}
-              className="w-full flex items-center justify-start p-3 text-white hover:bg-[#C19A6B] rounded-lg transition-colors duration-200"
+              className={`w-full flex items-center justify-start p-3 text-white rounded-lg transition-colors duration-200 ${
+                selectedSection === "sobreNos"
+                  ? "bg-[#C19A6B] shadow-lg"
+                  : "hover:bg-[#C19A6B]"
+              }`}
             >
               <Info className="mr-3 h-5 w-5" />
               Sobre Nós
