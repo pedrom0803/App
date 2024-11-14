@@ -5,6 +5,8 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from .models import *
+from django.contrib.auth import logout
+from django.http import JsonResponse
 
 class LoginView(APIView):
     def post(self, request):
@@ -30,3 +32,10 @@ class LoginView(APIView):
             }, status=status.HTTP_200_OK)
 
         return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+
+def logout_view(request):
+    if request.method == "POST":
+        logout(request)
+        return JsonResponse({"message": "Logout successful"}, status=200)
+    return JsonResponse({"error": "Invalid request"}, status=400)

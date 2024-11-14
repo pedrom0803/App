@@ -7,6 +7,8 @@ import Pacotes from "../pagesClient/PacotesPage";
 import AccountClient from "../pagesClient/AccountClient";
 import Cadastrar from "../pagesDrivers/CadastrarPage";
 import AccountDriver from "../pagesDrivers/AccountDriverPage";
+import AccountAdmin from "../pagesAdmin/AdminPage";
+import AccountParceiro from "../pagesParceiro/ParceiroPage";
 import {
   ShoppingBag,
   Home,
@@ -18,6 +20,7 @@ import {
   HandHelping,
   LogIn,
   User,
+  LogOut,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -49,6 +52,31 @@ export default function HomePage() {
     }
   }, []);
 
+  const logout = async () => {
+    try {
+      const response = await fetch("/api/logout/", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`, // Envia o token de acesso
+        },
+      });
+      console.log(response);
+      if (response.ok) {
+        // Limpa os dados do usuário no localStorage
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("user_type");
+
+        setSelectedSection("home");
+        setIsAuthenticated(false);
+      } else {
+        console.error("Falha no logout");
+      }
+    } catch (error) {
+      console.error("Erro ao tentar fazer logout", error);
+    }
+  };
+
   const renderContent = () => {
     switch (selectedSection) {
       case "home":
@@ -64,7 +92,15 @@ export default function HomePage() {
       case "login":
         return renderIniciarConta();
       case "conta":
-        return typeUser === "cliente" ? <AccountClient /> : <AccountDriver />;
+        return typeUser === "Cliente" ? (
+          <AccountClient />
+        ) : typeUser === "Driver" ? (
+          <AccountDriver />
+        ) : typeUser === "Parceiro" ? (
+          <AccountParceiro />
+        ) : (
+          <AccountAdmin />
+        );
       default:
         return null;
     }
@@ -253,6 +289,21 @@ export default function HomePage() {
               <Info className="mr-3 h-5 w-5" />
               Sobre Nós
             </button>
+            {isAuthenticated ? (
+              <button
+                onClick={logout}
+                className={`w-full flex items-center justify-start p-3 text-white rounded-lg transition-colors duration-200 ${
+                  selectedSection === "logOut"
+                    ? "bg-[#C19A6B] shadow-lg"
+                    : "hover:bg-[#C19A6B]"
+                }`}
+              >
+                <LogOut className="mr-3 h-5 w-5" />
+                Sair
+              </button>
+            ) : (
+              <div></div>
+            )}
           </nav>
         </aside>
 
