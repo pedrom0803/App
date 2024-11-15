@@ -1,5 +1,6 @@
 import React, { useState } from "react";
+import ConstructionPage from "../pagesExtra/ConstrucaoPage";
 
 export default function AccountAdmin() {
-  return <h1>Em construção "Conta Administrador"</h1>;
+  return <ConstructionPage message="Conta Administrador" />;
 }

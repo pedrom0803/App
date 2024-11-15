@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import ConstructionPage from "../pagesExtra/ConstrucaoPage";
 export default function AccountDriver() {
-  return <h1>Em construção "Conta Driver"</h1>;
+  return <ConstructionPage message="Conta Driver" />;
 }

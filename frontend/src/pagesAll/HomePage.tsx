@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import InfoPage from "./InfoPage";
 import EntrarPage from "./EntrarPage";
-import CriarConta from "./CriarConta";
+import CriarContaClient from "../pagesClient/CriarContaClientPage";
 import Pacotes from "../pagesClient/PacotesPage";
-import AccountClient from "../pagesClient/AccountClient";
+import AccountClient from "../pagesClient/AccountClientPage";
 import Cadastrar from "../pagesDrivers/CadastrarPage";
 import AccountDriver from "../pagesDrivers/AccountDriverPage";
 import AccountAdmin from "../pagesAdmin/AdminPage";
@@ -31,6 +31,8 @@ export default function HomePage() {
 
   const [typeUser, setTypeUser] = useState<string | null>(null);
 
+  const [idUser, setIdUser] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   const Footer = () => (
@@ -42,16 +44,17 @@ export default function HomePage() {
     </footer>
   );
 
-  useEffect(() => {
-    // Verifica se o usuário já está autenticado
-    const token = localStorage.getItem("access_token");
-    const userType = localStorage.getItem("user_type");
+  // useEffect(() => {
+  //   // Verifica se o usuário já está autenticado
+  //   const token = localStorage.getItem("access_token");
+  //   const userType = localStorage.getItem("user_type");
 
-    if (token) {
-      setIsAuthenticated(true);
-      setTypeUser(userType);
-    }
-  }, []);
+  //   console.log("User Type: " + userType);
+  //   if (token) {
+  //     setIsAuthenticated(true);
+  //     setTypeUser(userType);
+  //   }
+  // }, []);
 
   const logout = async () => {
     try {
@@ -76,8 +79,15 @@ export default function HomePage() {
     switch (selectedSection) {
       case "home":
         return renderHome();
-      case "iniciarConta":
-        return <CriarConta />;
+      case "criarConta":
+        return (
+          <CriarContaClient
+            onCriarContaClientSuccess={() => [
+              setIsAuthenticated(false),
+              setSelectedSection("login"),
+            ]}
+          />
+        );
       case "pacotes":
         return <Pacotes />;
       case "cadastrar":
@@ -87,9 +97,9 @@ export default function HomePage() {
       case "login":
         return renderIniciarConta();
       case "conta":
-        console.log(typeUser);
+        console.log(idUser);
         return typeUser === "Cliente" ? (
-          <AccountClient />
+          <AccountClient id={idUser} />
         ) : typeUser === "Driver" ? (
           <AccountDriver />
         ) : typeUser === "Parceiro" ? (
@@ -185,6 +195,8 @@ export default function HomePage() {
           onLoginSuccess={() => [
             setIsAuthenticated(true),
             setSelectedSection("conta"),
+            setTypeUser(localStorage.getItem("user_type")),
+            setIdUser(localStorage.getItem("id_user")),
           ]}
         />
         <p className="text-sm text-center mt-4 text-[#8B4513]">
@@ -192,7 +204,7 @@ export default function HomePage() {
           <a
             href="#"
             className="text-[#C19A6B] font-semibold"
-            onClick={() => setSelectedSection("iniciarConta")}
+            onClick={() => setSelectedSection("criarConta")}
           >
             Crie uma agora
           </a>

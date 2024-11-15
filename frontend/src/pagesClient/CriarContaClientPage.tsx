@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { MouseEvent } from "react";
+import { FormEvent } from "react";
+import axios from "axios";
 
-export default function CriarConta() {
+interface CriarContaClientProps {
+  onCriarContaClientSuccess: () => void;
+}
+
+export default function CriarContaClient({
+  onCriarContaClientSuccess,
+}: CriarContaClientProps) {
   const [errors, setErrors] = useState({
     name: "",
     email: "",
@@ -9,9 +17,13 @@ export default function CriarConta() {
     confirmPassword: "",
   });
 
-  function validarCampos(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault(); // Evita o envio do formulário até a validação ser feita
+  const [emailForm, setEmailForm] = useState("");
+  const [nameForm, setNameForm] = useState("");
+  const [passwordForm, setPasswordForm] = useState("");
 
+  const [emailExists, setEmailExists] = useState("");
+
+  function validarCampos() {
     let nameError = "";
     let emailError = "";
     let passwordError = "";
@@ -29,6 +41,8 @@ export default function CriarConta() {
     if (!/^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)*$/.test(name)) {
       nameError =
         "O nome deve começar com letra maiúscula e pode conter espaços entre os nomes.";
+    } else if (name.trim().split(" ").length < 2) {
+      nameError = "Por favor, insira pelo menos dois nomes.";
     }
 
     // Validação do email
@@ -62,8 +76,45 @@ export default function CriarConta() {
     // Se não houver erros, o formulário pode ser enviado
     if (!nameError && !emailError && !passwordError && !confirmPasswordError) {
       console.log("Campos válidos, formulário pode ser enviado.");
+      setEmailForm(email);
+      setNameForm(name);
+      setPasswordForm(password);
+      return true;
     }
+    return false;
   }
+
+  const handleCriarConta = async (e: FormEvent) => {
+    e.preventDefault();
+    if (validarCampos()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/criarcontaclient/",
+          {
+            emailForm,
+            passwordForm,
+            nameForm,
+          }
+        );
+
+        const data = response.data;
+
+        // if (response.data.access_token && response.data.refresh_token) {
+        //   localStorage.setItem("access_token", response.data.access_token);
+        //   localStorage.setItem("refresh_token", response.data.refresh_token);
+        // }
+        // localStorage.setItem("user_type", user_type);
+
+        if (data.message) {
+          onCriarContaClientSuccess();
+        } else {
+          setEmailExists("O email indicado já existe");
+        }
+      } catch (err) {
+        console.log("ERROR:" + err);
+      }
+    }
+  };
 
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
@@ -148,10 +199,13 @@ export default function CriarConta() {
                 )}
               </div>
             </div>
+            {emailExists && (
+              <p className="text-red-500 text-xs">{emailExists}</p>
+            )}
             <button
               type="submit"
               className="w-full mt-6 px-4 py-2 bg-[#D2B48C] text-white font-semibold rounded-md hover:bg-[#C19A6B] transition-colors duration-200"
-              onClick={validarCampos}
+              onClick={handleCriarConta}
             >
               Criar conta
             </button>

@@ -26,6 +26,7 @@ export default function EntrarPage({ onLoginSuccess }: EntrarPageProps) {
         localStorage.setItem("refresh_token", response.data.refresh_token);
       }
       localStorage.setItem("user_type", user_type);
+      localStorage.setItem("id_user", response.data.id_user);
 
       onLoginSuccess();
     } catch (err) {

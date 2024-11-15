@@ -6,7 +6,6 @@ from data.Utilizadores.op import getTipoUsers
 class Utilizador(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nome_completo = models.CharField(max_length=100)
-    user_name = models.CharField(max_length=50)
     contacto = models.CharField(max_length=9, null=True)
     tipo_user = models.CharField(
         max_length=100,
