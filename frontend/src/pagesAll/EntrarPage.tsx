@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FormEvent } from "react";
-import axiosInstance from "../axiosConfig";
+import axios from "axios";
 
 interface EntrarPageProps {
   onLoginSuccess: () => void;
@@ -14,15 +14,17 @@ export default function EntrarPage({ onLoginSuccess }: EntrarPageProps) {
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.post("/token/", {
+      const response = await axios.post("http://localhost:8000/api/login/", {
         email,
         password,
       });
 
       const { user_type } = response.data;
 
-      localStorage.setItem("access_token", response.data.access);
-      localStorage.setItem("refresh_token", response.data.refresh);
+      if (response.data.access_token && response.data.refresh_token) {
+        localStorage.setItem("access_token", response.data.access_token);
+        localStorage.setItem("refresh_token", response.data.refresh_token);
+      }
       localStorage.setItem("user_type", user_type);
 
       onLoginSuccess();

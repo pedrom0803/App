@@ -21,6 +21,6 @@ from back.views import *
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/token/', LoginView.as_view(), name='login'),
-    path("api/logout/", logout_view, name="logout"),
+    path('api/login/', LoginView.as_view(), name='login'),
+    path("api/logout/", LogoutView.as_view(), name="logout"),
 ]

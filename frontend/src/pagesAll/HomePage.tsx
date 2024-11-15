@@ -9,6 +9,7 @@ import Cadastrar from "../pagesDrivers/CadastrarPage";
 import AccountDriver from "../pagesDrivers/AccountDriverPage";
 import AccountAdmin from "../pagesAdmin/AdminPage";
 import AccountParceiro from "../pagesParceiro/ParceiroPage";
+import axios from "axios";
 import {
   ShoppingBag,
   Home,
@@ -54,26 +55,20 @@ export default function HomePage() {
 
   const logout = async () => {
     try {
-      const response = await fetch("/api/logout/", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`, // Envia o token de acesso
-        },
-      });
-      console.log(response);
-      if (response.ok) {
-        // Limpa os dados do usuário no localStorage
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        localStorage.removeItem("user_type");
+      const refreshToken = localStorage.getItem("refresh_token");
 
-        setSelectedSection("home");
-        setIsAuthenticated(false);
-      } else {
-        console.error("Falha no logout");
-      }
+      await axios.post(
+        "http://localhost:8000/api/logout/",
+        { refresh_token: refreshToken },
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      localStorage.clear(); // Limpa todos os dados do localStorage
+      setIsAuthenticated(false);
+      setSelectedSection("home");
+      alert("Você saiu com sucesso.");
     } catch (error) {
-      console.error("Erro ao tentar fazer logout", error);
+      alert("Erro ao sair da conta. Tente novamente.");
     }
   };
 
@@ -92,6 +87,7 @@ export default function HomePage() {
       case "login":
         return renderIniciarConta();
       case "conta":
+        console.log(typeUser);
         return typeUser === "Cliente" ? (
           <AccountClient />
         ) : typeUser === "Driver" ? (
