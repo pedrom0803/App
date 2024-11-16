@@ -72,10 +72,12 @@ class CreatClientView(APIView):
         
         return Response({"message": "Usuário criado com sucesso."}, status=status.HTTP_201_CREATED)
     
+        
+        
 class InfoUserView(APIView):
     def get(self, request, id):
         try:
-            utilizador = Utilizador.objects.get(id=id)
+            utilizador = Utilizador.objects.get(user_id=id)
             # Retorna os dados do usuário em formato JSON
             return Response({
                 "nome_completo": utilizador.nome_completo,
@@ -90,3 +92,6 @@ class InfoUserView(APIView):
             }, status=status.HTTP_200_OK)
         except Utilizador.DoesNotExist:
             return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        
+class ChangeInfooClient(APIView):

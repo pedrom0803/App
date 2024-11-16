@@ -97,7 +97,6 @@ export default function HomePage() {
       case "login":
         return renderIniciarConta();
       case "conta":
-        console.log(idUser);
         return typeUser === "Cliente" ? (
           <AccountClient id={idUser} />
         ) : typeUser === "Driver" ? (
