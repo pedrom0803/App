@@ -38,7 +38,7 @@ export default function AccountClient({ id }: AccountClientProps) {
     morada: "",
     distrito: "",
     concelho: "",
-    codigo_posta: "",
+    codigo_postal: "",
     porta: "",
   });
 
@@ -160,7 +160,7 @@ export default function AccountClient({ id }: AccountClientProps) {
         morada: morada,
         distrito: distrito,
         concelho: concelho,
-        codigo_posta: codigo_postal,
+        codigo_postal: codigo_postal,
         porta: porta,
       });
       return true;
@@ -187,7 +187,7 @@ export default function AccountClient({ id }: AccountClientProps) {
           <DetailRow
             id="contacto"
             label="Contacto"
-            value={user?.contacto || "Não especificado"}
+            value={user?.contacto || ""}
             input={inputValues}
             onChange={(newValue) => handleChange("contacto", newValue)}
           />
@@ -197,13 +197,13 @@ export default function AccountClient({ id }: AccountClientProps) {
           <DetailRow
             id="user_type"
             label="Tipo de Utilizador"
-            value={user?.tipo_user || "Não especificado"}
+            value={user?.tipo_user || ""}
             input={false}
           />
           <DetailRow
             id="morada"
             label="Morada"
-            value={user?.morada || "Não especificada"}
+            value={user?.morada || ""}
             input={inputValues}
             onChange={(newValue) => handleChange("morada", newValue)}
           />
@@ -213,21 +213,21 @@ export default function AccountClient({ id }: AccountClientProps) {
           <DetailRow
             id="distrito"
             label="Distrito"
-            value={user?.distrito || "Não especificado"}
+            value={user?.distrito || ""}
             input={inputValues}
             onChange={(newValue) => handleChange("distrito", newValue)}
           />
           <DetailRow
             id="concelho"
             label="Concelho"
-            value={user?.concelho || "Não especificado"}
+            value={user?.concelho || ""}
             input={inputValues}
             onChange={(newValue) => handleChange("concelho", newValue)}
           />
           <DetailRow
             id="codigo_postal"
             label="Código Postal"
-            value={user?.codigo_postal || "Não especificado"}
+            value={user?.codigo_postal || ""}
             input={inputValues}
             onChange={(newValue) => handleChange("codigo_postal", newValue)}
           />
@@ -237,7 +237,7 @@ export default function AccountClient({ id }: AccountClientProps) {
           <DetailRow
             id="porta"
             label="Porta"
-            value={user?.porta || "Não especificada"}
+            value={user?.porta || ""}
             input={inputValues}
             onChange={(newValue) => handleChange("porta", newValue)}
           />
@@ -256,7 +256,17 @@ export default function AccountClient({ id }: AccountClientProps) {
               </button>
               <button
                 className="bg-gray-400 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-500"
-                onClick={() => setInputValues(false)} // Apenas sai do modo de edição
+                onClick={() => [
+                  setInputValues(false),
+                  setValues({
+                    contacto: "",
+                    morada: "",
+                    distrito: "",
+                    concelho: "",
+                    codigo_postal: "",
+                    porta: "",
+                  }),
+                ]} // Apenas sai do modo de edição
               >
                 Cancelar
               </button>
@@ -285,7 +295,7 @@ function DetailRow({
 }: {
   id: string;
   label: string;
-  value: string | null;
+  value: string;
   input: boolean;
   onChange?: (newValue: string) => void;
 }) {
@@ -296,7 +306,7 @@ function DetailRow({
         <input
           id={id}
           type="text"
-          value={value || ""}
+          value={value}
           onChange={(e) => onChange?.(e.target.value)}
           className="border border-gray-300 rounded px-2 py-1 text-[#4A4A4A]"
         />

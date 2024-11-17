@@ -25,10 +25,10 @@ class Utilizador(models.Model):
     codigo_postal = models.CharField(max_length=8, null=True)
     porta = models.CharField(max_length=10, null=True)
 
-    def save(self, *args, **kwargs):
-        if self.distrito:  # Atualiza choices do concelho baseado no distrito selecionado
-            self._meta.get_field('concelho').choices = getConcelhos(self.distrito)
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if self.distrito:  # Atualiza choices do concelho baseado no distrito selecionado
+    #         self._meta.get_field('concelho').choices = getConcelhos(self.distrito)
+    #     super().save(*args, **kwargs)
     
     def __str__(self):
         return f"{self.user_name} ({self.nome_completo})"

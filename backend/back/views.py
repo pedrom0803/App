@@ -102,15 +102,19 @@ class ChangeInfoClientView(APIView):
         distrito=request.data.get("distrito")
         concelho= request.data.get("concelho")
         porta=request.data.get("porta")
-        
+        codigo_postal = request.data.get("codigo_postal")
+
+        print(f"Recebido: id={id}, contacto={contacto}, morada={morada}, distrito={distrito}, concelho={concelho}, porta={porta}, codigo_postal={codigo_postal}")
         try:
             utilizador = Utilizador.objects.get(user_id=id)
             
-            utilizador.contacto=contacto
-            utilizador.morada=morada
-            utilizador.distrito=distrito
-            utilizador.concelho=concelho
-            utilizador.porta=porta
+            utilizador.contacto=str(contacto)
+            utilizador.morada=str(morada)
+            utilizador.distrito=str(distrito)
+            utilizador.concelho=str(concelho)
+            utilizador.porta=str(porta)
+            utilizador.codigo_postal = str(codigo_postal)
+            
             
             utilizador.save()
         except Utilizador.DoesNotExist:
