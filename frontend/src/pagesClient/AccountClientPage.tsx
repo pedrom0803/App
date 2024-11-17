@@ -63,18 +63,39 @@ export default function AccountClient({ id }: AccountClientProps) {
 
   const handleChangeInfo = async (e: FormEvent) => {
     e.preventDefault();
+
     if (validarCampos()) {
       try {
         const response = await axios.post(
           "http://localhost:8000/api/changeclientinfo/",
-          {}
+          {
+            id,
+            contacto: values.contacto,
+            morada: values.morada,
+            distrito: values.distrito,
+            concelho: values.concelho,
+            porta: values.porta,
+          }
         );
 
-        const data = response.data;
-
-        setInputValues(false);
-      } catch (err) {
-        setError("Erro ao mudar na base de dados");
+        if (response.status === 200) {
+          // Sucesso
+          alert("Dados atualizados com sucesso.");
+          setError(null); // Remove mensagens de erro
+          setInputValues(false); // Sai do modo de edição
+        } else {
+          // Mensagem de falha inesperada
+          setError("Ocorreu um problema inesperado.");
+          alert(null);
+        }
+      } catch (err: any) {
+        // Lida com erros de requisição
+        if (err.response && err.response.status === 404) {
+          setError("Utilizador não encontrado.");
+        } else {
+          setError("Erro ao mudar na base de dados.");
+        }
+        alert(null);
       }
     }
   };
@@ -91,6 +112,61 @@ export default function AccountClient({ id }: AccountClientProps) {
 
   if (error) {
     return <div>{error}</div>;
+  }
+
+  function validarCampos() {
+    let contactoError = "";
+    let moradaError = "";
+    let codigo_postalError = "";
+    let portaError = "";
+
+    const contacto = (document.getElementById("contacto") as HTMLInputElement)
+      .value;
+    const morada = (document.getElementById("morada") as HTMLInputElement)
+      .value;
+    const distrito = (document.getElementById("distrito") as HTMLInputElement)
+      .value;
+    const concelho = (document.getElementById("concelho") as HTMLInputElement)
+      .value;
+    const codigo_postal = (
+      document.getElementById("codigo_postal") as HTMLInputElement
+    ).value;
+    const porta = (document.getElementById("porta") as HTMLInputElement).value;
+
+    if (!/^(2|3|9)\d{8}$/.test(contacto)) {
+      contactoError = "Número de contacto inválido";
+    }
+    if (morada === null || morada === undefined || morada === "") {
+      moradaError = "Morada inválida";
+    }
+    if (!/^[0-9]{4}-[0-9]{3}$/.test(codigo_postal)) {
+      codigo_postalError = "Código postal inválido";
+    }
+
+    if (porta === null || porta === undefined || porta === "") {
+      portaError = "Número de porta inválida";
+    }
+
+    setErrors({
+      contacto: contactoError,
+      morada: moradaError,
+      codigo_postal: codigo_postalError,
+      porta: portaError,
+    });
+
+    if (!contactoError && !moradaError && !codigo_postalError && !portaError) {
+      setValues({
+        contacto: contacto,
+        morada: morada,
+        distrito: distrito,
+        concelho: concelho,
+        codigo_posta: codigo_postal,
+        porta: porta,
+      });
+      return true;
+    }
+    console.log("Deu erro");
+    return false;
   }
 
   return (
@@ -115,6 +191,9 @@ export default function AccountClient({ id }: AccountClientProps) {
             input={inputValues}
             onChange={(newValue) => handleChange("contacto", newValue)}
           />
+          {errors.contacto && (
+            <p className="text-red-500 text-xs">{errors.contacto}</p>
+          )}
           <DetailRow
             id="user_type"
             label="Tipo de Utilizador"
@@ -128,6 +207,9 @@ export default function AccountClient({ id }: AccountClientProps) {
             input={inputValues}
             onChange={(newValue) => handleChange("morada", newValue)}
           />
+          {errors.morada && (
+            <p className="text-red-500 text-xs">{errors.morada}</p>
+          )}
           <DetailRow
             id="distrito"
             label="Distrito"
@@ -149,6 +231,9 @@ export default function AccountClient({ id }: AccountClientProps) {
             input={inputValues}
             onChange={(newValue) => handleChange("codigo_postal", newValue)}
           />
+          {errors.codigo_postal && (
+            <p className="text-red-500 text-xs">{errors.codigo_postal}</p>
+          )}
           <DetailRow
             id="porta"
             label="Porta"
@@ -156,13 +241,16 @@ export default function AccountClient({ id }: AccountClientProps) {
             input={inputValues}
             onChange={(newValue) => handleChange("porta", newValue)}
           />
+          {errors.porta && (
+            <p className="text-red-500 text-xs">{errors.porta}</p>
+          )}
         </div>
         <div className="mt-4 text-center">
           {inputValues ? (
             <div className="mt-4 text-center flex justify-center space-x-4">
               <button
                 className="bg-[#8B4513] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#6A3210]"
-                onClick={() => handleChangeInfo} // Salvar e sair do modo de edição
+                onClick={handleChangeInfo} // Salvar e sair do modo de edição
               >
                 Salvar
               </button>
@@ -217,49 +305,4 @@ function DetailRow({
       )}
     </div>
   );
-}
-
-function validarCampos() {
-  let contactoError = "";
-  let moradaError = "";
-  let codigo_postalError = "";
-  let portaError = "";
-
-  const contacto = (document.getElementById("contacto") as HTMLInputElement)
-    .value;
-  const morada = (document.getElementById("morada") as HTMLInputElement).value;
-  const distrito = (document.getElementById("distrito") as HTMLInputElement)
-    .value;
-  const concelho = (document.getElementById("concelho") as HTMLInputElement)
-    .value;
-  const codigo_postal = (
-    document.getElementById("codigo_postal") as HTMLInputElement
-  ).value;
-  const porta = (document.getElementById("porta") as HTMLInputElement).value;
-
-  if (!/^(2|3|9)\d{8}$/.test(contacto)) {
-    contactoError = "Número de contacto inválido";
-  }
-  if (morada === null || morada === undefined || morada === "") {
-    moradaError = "Morada inválida";
-  }
-  if(!/^[0-9]{4}-[0-9]{3}$/.test(codigo_postal)){
-    codigo_postalError="Código postal inválido"
-  }
-
-  if (porta === null || porta === undefined || porta === "") {
-    portaError = "Número de porta inválida";
-  }
-
-  setErrors({
-    contacto: contactoError,
-    morada: moradaError,
-    codigo_postal: codigo_postalError,
-    porta: portaError,
-  });
-
-  if(!contactoError && !moradaError && !codigo_postalError && portaError){
-    return true;
-  }
-  return false;
 }

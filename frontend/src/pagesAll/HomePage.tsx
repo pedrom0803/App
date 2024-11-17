@@ -44,18 +44,6 @@ export default function HomePage() {
     </footer>
   );
 
-  // useEffect(() => {
-  //   // Verifica se o usuário já está autenticado
-  //   const token = localStorage.getItem("access_token");
-  //   const userType = localStorage.getItem("user_type");
-
-  //   console.log("User Type: " + userType);
-  //   if (token) {
-  //     setIsAuthenticated(true);
-  //     setTypeUser(userType);
-  //   }
-  // }, []);
-
   const logout = async () => {
     try {
       const refreshToken = localStorage.getItem("refresh_token");

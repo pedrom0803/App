@@ -94,4 +94,26 @@ class InfoUserView(APIView):
             return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         
-class ChangeInfooClient(APIView):
+class ChangeInfoClientView(APIView):
+    def post(self,request):
+        id=request.data.get("id")
+        contacto =  request.data.get("contacto")
+        morada=request.data.get("morada")
+        distrito=request.data.get("distrito")
+        concelho= request.data.get("concelho")
+        porta=request.data.get("porta")
+        
+        try:
+            utilizador = Utilizador.objects.get(user_id=id)
+            
+            utilizador.contacto=contacto
+            utilizador.morada=morada
+            utilizador.distrito=distrito
+            utilizador.concelho=concelho
+            utilizador.porta=porta
+            
+            utilizador.save()
+        except Utilizador.DoesNotExist:
+            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        return Response({"detail": "Dados atualizados com sucesso"}, status=status.HTTP_200_OK)

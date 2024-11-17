@@ -25,4 +25,5 @@ urlpatterns = [
     path("api/logout/", LogoutView.as_view(), name="logout"),
     path("api/criarcontaclient/",CreatClientView.as_view(), name="criarcontaclient"),
     path('api/infoUser/<int:id>/', InfoUserView.as_view(), name='info_user'),
+    path('api/changeclientinfo/',ChangeInfoClientView.as_view(), name='change_clientinfo'),
 ]

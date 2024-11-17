@@ -75,7 +75,6 @@ export default function CriarContaClient({
 
     // Se não houver erros, o formulário pode ser enviado
     if (!nameError && !emailError && !passwordError && !confirmPasswordError) {
-      console.log("Campos válidos, formulário pode ser enviado.");
       setEmailForm(email);
       setNameForm(name);
       setPasswordForm(password);
