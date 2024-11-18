@@ -52,6 +52,15 @@ export default function AccountClient({ id }: AccountClientProps) {
         })
         .then((data) => {
           setUser(data);
+          setValues({
+            contacto: data.contacto,
+            morada: data.morada,
+            distrito: data.distrito,
+            concelho: data.concelho,
+            codigo_postal: data.codigo_postal,
+            porta: data.porta,
+          });
+
           setLoading(false);
         })
         .catch((error) => {
@@ -70,11 +79,7 @@ export default function AccountClient({ id }: AccountClientProps) {
           "http://localhost:8000/api/changeclientinfo/",
           {
             id,
-            contacto: values.contacto,
-            morada: values.morada,
-            distrito: values.distrito,
-            concelho: values.concelho,
-            porta: values.porta,
+            values,
           }
         );
 
@@ -95,14 +100,7 @@ export default function AccountClient({ id }: AccountClientProps) {
         } else {
           setError("Erro ao mudar na base de dados.");
         }
-        alert(null);
       }
-    }
-  };
-
-  const handleChange = (key: keyof UserData, value: string) => {
-    if (user) {
-      setUser({ ...user, [key]: value });
     }
   };
 
@@ -165,7 +163,6 @@ export default function AccountClient({ id }: AccountClientProps) {
       });
       return true;
     }
-    console.log("Deu erro");
     return false;
   }
 
@@ -187,10 +184,16 @@ export default function AccountClient({ id }: AccountClientProps) {
           <DetailRow
             id="contacto"
             label="Contacto"
-            value={user?.contacto || ""}
+            value={values.contacto || ""}
             input={inputValues}
-            onChange={(newValue) => handleChange("contacto", newValue)}
+            onChange={(newValue) =>
+              setValues((prevValues) => ({
+                ...prevValues,
+                contacto: newValue,
+              }))
+            }
           />
+
           {errors.contacto && (
             <p className="text-red-500 text-xs">{errors.contacto}</p>
           )}
@@ -203,9 +206,14 @@ export default function AccountClient({ id }: AccountClientProps) {
           <DetailRow
             id="morada"
             label="Morada"
-            value={user?.morada || ""}
+            value={values.morada || ""}
             input={inputValues}
-            onChange={(newValue) => handleChange("morada", newValue)}
+            onChange={(newValue) =>
+              setValues((prevValues) => ({
+                ...prevValues,
+                morada: newValue,
+              }))
+            }
           />
           {errors.morada && (
             <p className="text-red-500 text-xs">{errors.morada}</p>
@@ -213,23 +221,38 @@ export default function AccountClient({ id }: AccountClientProps) {
           <DetailRow
             id="distrito"
             label="Distrito"
-            value={user?.distrito || ""}
+            value={values.distrito || ""}
             input={inputValues}
-            onChange={(newValue) => handleChange("distrito", newValue)}
+            onChange={(newValue) =>
+              setValues((prevValues) => ({
+                ...prevValues,
+                distrito: newValue,
+              }))
+            }
           />
           <DetailRow
             id="concelho"
             label="Concelho"
-            value={user?.concelho || ""}
+            value={values.concelho || ""}
             input={inputValues}
-            onChange={(newValue) => handleChange("concelho", newValue)}
+            onChange={(newValue) =>
+              setValues((prevValues) => ({
+                ...prevValues,
+                concelho: newValue,
+              }))
+            }
           />
           <DetailRow
             id="codigo_postal"
             label="Código Postal"
-            value={user?.codigo_postal || ""}
+            value={values.codigo_postal || ""}
             input={inputValues}
-            onChange={(newValue) => handleChange("codigo_postal", newValue)}
+            onChange={(newValue) =>
+              setValues((prevValues) => ({
+                ...prevValues,
+                codigo_postal: newValue,
+              }))
+            }
           />
           {errors.codigo_postal && (
             <p className="text-red-500 text-xs">{errors.codigo_postal}</p>
@@ -237,9 +260,14 @@ export default function AccountClient({ id }: AccountClientProps) {
           <DetailRow
             id="porta"
             label="Porta"
-            value={user?.porta || ""}
+            value={values.porta || ""}
             input={inputValues}
-            onChange={(newValue) => handleChange("porta", newValue)}
+            onChange={(newValue) =>
+              setValues((prevValues) => ({
+                ...prevValues,
+                porta: newValue,
+              }))
+            }
           />
           {errors.porta && (
             <p className="text-red-500 text-xs">{errors.porta}</p>
@@ -259,14 +287,14 @@ export default function AccountClient({ id }: AccountClientProps) {
                 onClick={() => [
                   setInputValues(false),
                   setValues({
-                    contacto: "",
-                    morada: "",
-                    distrito: "",
-                    concelho: "",
-                    codigo_postal: "",
-                    porta: "",
+                    contacto: user?.contacto || "",
+                    morada: user?.morada || "",
+                    distrito: user?.distrito || "",
+                    concelho: user?.concelho || "",
+                    codigo_postal: user?.codigo_postal || "",
+                    porta: user?.porta || "",
                   }),
-                ]} // Apenas sai do modo de edição
+                ]}
               >
                 Cancelar
               </button>
@@ -274,7 +302,17 @@ export default function AccountClient({ id }: AccountClientProps) {
           ) : (
             <button
               className="bg-[#8B4513] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#6A3210]"
-              onClick={() => setInputValues((prev) => !prev)}
+              onClick={() => {
+                setValues({
+                  contacto: user?.contacto || "",
+                  morada: user?.morada || "",
+                  distrito: user?.distrito || "",
+                  concelho: user?.concelho || "",
+                  codigo_postal: user?.codigo_postal || "",
+                  porta: user?.porta || "",
+                });
+                setInputValues(true);
+              }}
             >
               Editar Informações
             </button>

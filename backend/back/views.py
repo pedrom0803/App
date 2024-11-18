@@ -97,17 +97,17 @@ class InfoUserView(APIView):
 class ChangeInfoClientView(APIView):
     def post(self,request):
         id=request.data.get("id")
-        contacto =  request.data.get("contacto")
-        morada=request.data.get("morada")
-        distrito=request.data.get("distrito")
-        concelho= request.data.get("concelho")
-        porta=request.data.get("porta")
-        codigo_postal = request.data.get("codigo_postal")
+        values=request.data.get("values")
 
-        print(f"Recebido: id={id}, contacto={contacto}, morada={morada}, distrito={distrito}, concelho={concelho}, porta={porta}, codigo_postal={codigo_postal}")
+        contacto = values["contacto"]
+        morada=values["morada"]
+        distrito=values["distrito"]
+        concelho= values["concelho"]
+        porta=values["porta"]
+        codigo_postal = values["codigo_postal"]
+
         try:
             utilizador = Utilizador.objects.get(user_id=id)
-            
             utilizador.contacto=str(contacto)
             utilizador.morada=str(morada)
             utilizador.distrito=str(distrito)
@@ -115,9 +115,13 @@ class ChangeInfoClientView(APIView):
             utilizador.porta=str(porta)
             utilizador.codigo_postal = str(codigo_postal)
             
-            
             utilizador.save()
+        except KeyError as e:
+            return Response({"detail": f"Missing field: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
         except Utilizador.DoesNotExist:
             return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            return Response({"detail": f"Error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         return Response({"detail": "Dados atualizados com sucesso"}, status=status.HTTP_200_OK)
