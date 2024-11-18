@@ -125,3 +125,7 @@ class ChangeInfoClientView(APIView):
             return Response({"detail": f"Error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({"detail": "Dados atualizados com sucesso"}, status=status.HTTP_200_OK)
+    
+class GetDistritosConcelhos(APIView):
+    def get(self, request):
+        return

@@ -42,6 +42,27 @@ export default function AccountClient({ id }: AccountClientProps) {
     porta: "",
   });
 
+  const [distritos, setDistritos] = useState<{
+    [key: string]: string[];
+  } | null>(null);
+
+  const handleDistritoChange = (distrito: string) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      distrito,
+      concelho: "", // Resetar concelho ao mudar o distrito
+    }));
+  };
+
+  const handleConcelhoChange = (concelho: string) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      concelho,
+    }));
+  };
+
+  const concelhosFiltrados = distritos ? distritos[values.distrito] || [] : [];
+
   useEffect(() => {
     if (id) {
       fetch(`http://localhost:8000/api/infoUser/${id}/`)
@@ -223,24 +244,16 @@ export default function AccountClient({ id }: AccountClientProps) {
             label="Distrito"
             value={values.distrito || ""}
             input={inputValues}
-            onChange={(newValue) =>
-              setValues((prevValues) => ({
-                ...prevValues,
-                distrito: newValue,
-              }))
-            }
+            onChange={(newValue) => handleDistritoChange(newValue)}
+            options={distritos ? Object.keys(distritos) : []} // Lista de distritos
           />
           <DetailRow
             id="concelho"
             label="Concelho"
             value={values.concelho || ""}
             input={inputValues}
-            onChange={(newValue) =>
-              setValues((prevValues) => ({
-                ...prevValues,
-                concelho: newValue,
-              }))
-            }
+            onChange={(newValue) => handleConcelhoChange(newValue)}
+            options={concelhosFiltrados} // Concêlhos baseados no distrito
           />
           <DetailRow
             id="codigo_postal"
@@ -330,17 +343,33 @@ function DetailRow({
   value,
   input,
   onChange,
+  options,
 }: {
   id: string;
   label: string;
   value: string;
   input: boolean;
   onChange?: (newValue: string) => void;
+  options?: string[]; // Adicionar lista de opções
 }) {
   return (
     <div className="flex justify-between items-center border-b pb-2">
       <span className="font-semibold text-[#8B4513]">{label}:</span>
-      {input ? (
+      {input && options ? (
+        <select
+          id={id}
+          value={value}
+          onChange={(e) => onChange?.(e.target.value)}
+          className="border border-gray-300 rounded px-2 py-1 text-[#4A4A4A]"
+        >
+          <option value="">Selecione</option>
+          {options.map((option, idx) => (
+            <option key={idx} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : input ? (
         <input
           id={id}
           type="text"
