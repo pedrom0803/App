@@ -26,4 +26,5 @@ urlpatterns = [
     path("api/criarcontaclient/",CreatClientView.as_view(), name="criarcontaclient"),
     path('api/infoUser/<int:id>/', InfoUserView.as_view(), name='info_user'),
     path('api/changeclientinfo/',ChangeInfoClientView.as_view(), name='change_clientinfo'),
+    path('api/getdistritosconcelhos/',GetDistritosConcelhosView.as_view(), name='get_distritos_concelhos'),
 ]

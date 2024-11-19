@@ -1,5 +1,12 @@
 import json
 
+
+def getDistritosConcelhos():
+    with open('/Users/pedromiguel/Desktop/App/App/backend/data/DistritosConcelhos/Distritos_concelhos.json', 'r') as file:
+        dados = json.load(file)
+    
+    return dados
+    
 def getDistritos():
     import locale
 

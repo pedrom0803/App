@@ -20,6 +20,12 @@ interface AccountClientProps {
   id?: string | null;
 }
 
+interface DistritoConcelho {
+  distrito: string;
+  concelho: string;
+  ativo: number;
+}
+
 export default function AccountClient({ id }: AccountClientProps) {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,6 +36,8 @@ export default function AccountClient({ id }: AccountClientProps) {
     contacto: "",
     morada: "",
     codigo_postal: "",
+    distrito: "",
+    concelho: "",
     porta: "",
   });
 
@@ -42,26 +50,12 @@ export default function AccountClient({ id }: AccountClientProps) {
     porta: "",
   });
 
-  const [distritos, setDistritos] = useState<{
-    [key: string]: string[];
-  } | null>(null);
+  const [distritosConcelhos, setDistritosConcelhos] = useState<
+    DistritoConcelho[]
+  >([]);
 
-  const handleDistritoChange = (distrito: string) => {
-    setValues((prevValues) => ({
-      ...prevValues,
-      distrito,
-      concelho: "", // Resetar concelho ao mudar o distrito
-    }));
-  };
-
-  const handleConcelhoChange = (concelho: string) => {
-    setValues((prevValues) => ({
-      ...prevValues,
-      concelho,
-    }));
-  };
-
-  const concelhosFiltrados = distritos ? distritos[values.distrito] || [] : [];
+  const [distritos, setDistritos] = useState<string[]>([]);
+  const [selectedDistrito, setSelectedDistrito] = useState<string>("");
 
   useEffect(() => {
     if (id) {
@@ -82,6 +76,28 @@ export default function AccountClient({ id }: AccountClientProps) {
             porta: data.porta,
           });
 
+          setLoading(false);
+        })
+        .catch((error) => {
+          setError(error.message);
+          setLoading(false);
+        });
+    }
+    if (id) {
+      fetch(`http://localhost:8000/api/getdistritosconcelhos/`)
+        .then((response) => {
+          if (!response.ok)
+            throw new Error("Erro ao carregar os dados do usuário");
+          return response.json();
+        })
+        .then((data: DistritoConcelho[]) => {
+          setDistritosConcelhos(data);
+
+          const uniqueDistritos = Array.from(
+            new Set(data.map((item: DistritoConcelho) => item.distrito))
+          );
+
+          setDistritos(uniqueDistritos);
           setLoading(false);
         })
         .catch((error) => {
@@ -137,6 +153,8 @@ export default function AccountClient({ id }: AccountClientProps) {
     let contactoError = "";
     let moradaError = "";
     let codigo_postalError = "";
+    let distritoError = "";
+    let concelhoError = "";
     let portaError = "";
 
     const contacto = (document.getElementById("contacto") as HTMLInputElement)
@@ -161,7 +179,12 @@ export default function AccountClient({ id }: AccountClientProps) {
     if (!/^[0-9]{4}-[0-9]{3}$/.test(codigo_postal)) {
       codigo_postalError = "Código postal inválido";
     }
-
+    if (distrito === null || distrito === undefined || distrito === "") {
+      distritoError = "Selecione um distrito";
+    }
+    if (concelho === null || concelho === undefined || concelho === "") {
+      concelhoError = "Selecione um concelho";
+    }
     if (porta === null || porta === undefined || porta === "") {
       portaError = "Número de porta inválida";
     }
@@ -170,10 +193,19 @@ export default function AccountClient({ id }: AccountClientProps) {
       contacto: contactoError,
       morada: moradaError,
       codigo_postal: codigo_postalError,
+      distrito: distritoError,
+      concelho: concelhoError,
       porta: portaError,
     });
 
-    if (!contactoError && !moradaError && !codigo_postalError && !portaError) {
+    if (
+      !contactoError &&
+      !moradaError &&
+      !codigo_postalError &&
+      !distritoError &&
+      !concelhoError &&
+      !portaError
+    ) {
       setValues({
         contacto: contacto,
         morada: morada,
@@ -244,17 +276,38 @@ export default function AccountClient({ id }: AccountClientProps) {
             label="Distrito"
             value={values.distrito || ""}
             input={inputValues}
-            onChange={(newValue) => handleDistritoChange(newValue)}
-            options={distritos ? Object.keys(distritos) : []} // Lista de distritos
+            options={distritos} // Passa os distritos como opções
+            onChange={(newValue) => {
+              setSelectedDistrito(newValue);
+              setValues((prevValues) => ({
+                ...prevValues,
+                distrito: newValue,
+                concelho: "",
+              }));
+            }}
           />
+          {errors.distrito && (
+            <p className="text-red-500 text-xs">{errors.distrito}</p>
+          )}
           <DetailRow
             id="concelho"
             label="Concelho"
             value={values.concelho || ""}
             input={inputValues}
-            onChange={(newValue) => handleConcelhoChange(newValue)}
-            options={concelhosFiltrados} // Concêlhos baseados no distrito
+            options={
+              selectedDistrito
+                ? distritosConcelhos
+                    .filter((item) => item.distrito === selectedDistrito)
+                    .map((item) => item.concelho)
+                : []
+            } // Filtra os concelhos com base no distrito selecionado
+            onChange={(newValue) =>
+              setValues((prevValues) => ({ ...prevValues, concelho: newValue }))
+            }
           />
+          {errors.concelho && (
+            <p className="text-red-500 text-xs">{errors.concelho}</p>
+          )}
           <DetailRow
             id="codigo_postal"
             label="Código Postal"
@@ -350,7 +403,7 @@ function DetailRow({
   value: string;
   input: boolean;
   onChange?: (newValue: string) => void;
-  options?: string[]; // Adicionar lista de opções
+  options?: string[]; // Adiciona suporte para opções de dropdown
 }) {
   return (
     <div className="flex justify-between items-center border-b pb-2">
@@ -363,8 +416,8 @@ function DetailRow({
           className="border border-gray-300 rounded px-2 py-1 text-[#4A4A4A]"
         >
           <option value="">Selecione</option>
-          {options.map((option, idx) => (
-            <option key={idx} value={option}>
+          {options.map((option) => (
+            <option key={option} value={option}>
               {option}
             </option>
           ))}

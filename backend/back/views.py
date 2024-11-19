@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate
 from .models import *
 from django.contrib.auth import logout
 from django.http import JsonResponse
+from data.DistritosConcelhos import op
 
 class LoginView(APIView):
     def post(self, request):
@@ -121,11 +122,17 @@ class ChangeInfoClientView(APIView):
         except Utilizador.DoesNotExist:
             return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            print(f"Unexpected error: {e}")
             return Response({"detail": f"Error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({"detail": "Dados atualizados com sucesso"}, status=status.HTTP_200_OK)
     
-class GetDistritosConcelhos(APIView):
+class GetDistritosConcelhosView(APIView):
     def get(self, request):
-        return
+        try:
+            data = op.getDistritosConcelhos()
+            if not data:
+                return Response({"detail": f"Dados vazios"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            else:
+                return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": f"Error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

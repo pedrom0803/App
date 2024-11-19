@@ -8,7 +8,8 @@ import AccountClient from "../pagesClient/AccountClientPage";
 import Cadastrar from "../pagesDrivers/CadastrarPage";
 import AccountDriver from "../pagesDrivers/AccountDriverPage";
 import AccountAdmin from "../pagesAdmin/AdminPage";
-import AccountParceiro from "../pagesParceiro/ParceiroPage";
+import AccountParceiro from "../pagesParceiro/AccountParceiroPage";
+import CriarContaParceiro from "../pagesParceiro/CriarParceiroPage";
 import axios from "axios";
 import {
   ShoppingBag,
@@ -22,6 +23,7 @@ import {
   LogIn,
   User,
   LogOut,
+  HandshakeIcon,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -84,6 +86,8 @@ export default function HomePage() {
         return <InfoPage />;
       case "login":
         return renderIniciarConta();
+      case "parceiro":
+        return <CriarContaParceiro />;
       case "conta":
         return typeUser === "Cliente" ? (
           <AccountClient id={idUser} />
@@ -283,6 +287,17 @@ export default function HomePage() {
             >
               <Info className="mr-3 h-5 w-5" />
               Sobre Nós
+            </button>
+            <button
+              onClick={() => setSelectedSection("parceiro")}
+              className={`w-full flex items-center justify-start p-3 text-white rounded-lg transition-colors duration-200 ${
+                selectedSection === "parceiro"
+                  ? "bg-[#C19A6B] shadow-lg"
+                  : "hover:bg-[#C19A6B]"
+              }`}
+            >
+              <HandshakeIcon className="mr-3 h-5 w-5" />
+              Parceiro
             </button>
             {isAuthenticated ? (
               <button

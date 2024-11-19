@@ -1,5 +1,6 @@
 import React, { useState } from "react";
+import ConstructionPage from "../pagesExtra/ConstrucaoPage";
 
 export default function Cadastrar() {
-  return <h1>Em construção "Cadastrar"</h1>;
+  return <ConstructionPage message="Cadastrar" />;
 }
